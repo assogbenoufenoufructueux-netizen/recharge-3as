@@ -1,42 +1,40 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { bootstrapFirstAdmin } from "@/lib/admin.functions";
 import { toast } from "sonner";
 import { Shield, Loader2 } from "lucide-react";
 
-/** Visible uniquement si aucun admin n'existe : permet au premier compte de devenir administrateur. */
+/**
+ * Bouton de bootstrap admin. La promotion est gérée uniquement côté serveur
+ * via la fonction `bootstrap_first_admin` qui n'agit que si aucun admin n'existe.
+ * Aucune logique sensible côté client.
+ */
 export function PromoteAdminButton() {
   const { user, refreshRole, role } = useAuth();
-  const qc = useQueryClient();
   const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
+  const bootstrap = useServerFn(bootstrapFirstAdmin);
 
-  const { data: noAdmin } = useQuery({
-    queryKey: ["any-admin"],
-    queryFn: async () => {
-      const { count } = await supabase
-        .from("user_roles")
-        .select("*", { count: "exact", head: true })
-        .eq("role", "admin");
-      return (count ?? 0) === 0;
-    },
-  });
-
-  if (!noAdmin || role === "admin") return null;
+  if (!user || role === "admin" || done) return null;
 
   const promote = async () => {
-    if (!user) return;
     setLoading(true);
-    const { error } = await supabase.from("user_roles").insert({ user_id: user.id, role: "admin" });
-    setLoading(false);
-    if (error) {
-      toast.error("Impossible de devenir admin", { description: error.message });
-      return;
+    try {
+      const res = await bootstrap({});
+      if (res.promoted) {
+        toast.success("Vous êtes maintenant administrateur");
+        await refreshRole();
+      } else {
+        toast.info("Un administrateur existe déjà");
+        setDone(true);
+      }
+    } catch (e: any) {
+      toast.error("Action refusée", { description: e.message });
+    } finally {
+      setLoading(false);
     }
-    toast.success("Vous êtes maintenant administrateur");
-    await refreshRole();
-    qc.invalidateQueries({ queryKey: ["any-admin"] });
   };
 
   return (
@@ -46,7 +44,7 @@ export function PromoteAdminButton() {
         Configuration initiale
       </div>
       <p className="text-xs text-muted-foreground">
-        Aucun administrateur n'est encore défini. Vous pouvez devenir le premier admin.
+        Si aucun administrateur n'a encore été créé, vous pouvez devenir le premier admin.
       </p>
       <Button onClick={promote} disabled={loading} size="sm" className="w-full">
         {loading && <Loader2 className="h-3.5 w-3.5 mr-2 animate-spin" />}
