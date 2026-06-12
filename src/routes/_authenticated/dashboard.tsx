@@ -132,7 +132,7 @@ function Dashboard() {
         </CardContent>
       </Card>
 
-      
+      <PromoteAdminButton />
     </div>
   );
 }
