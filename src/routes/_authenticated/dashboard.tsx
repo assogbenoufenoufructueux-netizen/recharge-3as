@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/auth";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { PromoteAdminButton } from "@/components/PromoteAdminButton";
+
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
@@ -131,7 +131,7 @@ function Dashboard() {
         </CardContent>
       </Card>
 
-      <PromoteAdminButton />
+      
     </div>
   );
 }
