@@ -17,6 +17,13 @@ import { Route as AuthenticatedRechargeRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
 import { Route as AuthenticatedHistoriqueRouteImport } from './routes/_authenticated/historique'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedAdminStatsRouteImport } from './routes/_authenticated/admin.stats'
+import { Route as AuthenticatedAdminPaiementsRouteImport } from './routes/_authenticated/admin.paiements'
+import { Route as AuthenticatedAdminLogsRouteImport } from './routes/_authenticated/admin.logs'
+import { Route as AuthenticatedAdminDemandesRouteImport } from './routes/_authenticated/admin.demandes'
+import { Route as AuthenticatedAdminDemandesIdRouteImport } from './routes/_authenticated/admin.demandes.$id'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -58,15 +65,60 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminStatsRoute = AuthenticatedAdminStatsRouteImport.update({
+  id: '/stats',
+  path: '/stats',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminPaiementsRoute =
+  AuthenticatedAdminPaiementsRouteImport.update({
+    id: '/paiements',
+    path: '/paiements',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminLogsRoute = AuthenticatedAdminLogsRouteImport.update({
+  id: '/logs',
+  path: '/logs',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminDemandesRoute =
+  AuthenticatedAdminDemandesRouteImport.update({
+    id: '/demandes',
+    path: '/demandes',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminDemandesIdRoute =
+  AuthenticatedAdminDemandesIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAdminDemandesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/historique': typeof AuthenticatedHistoriqueRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/recharge': typeof AuthenticatedRechargeRoute
   '/retrait': typeof AuthenticatedRetraitRoute
+  '/admin/demandes': typeof AuthenticatedAdminDemandesRouteWithChildren
+  '/admin/logs': typeof AuthenticatedAdminLogsRoute
+  '/admin/paiements': typeof AuthenticatedAdminPaiementsRoute
+  '/admin/stats': typeof AuthenticatedAdminStatsRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/admin/demandes/$id': typeof AuthenticatedAdminDemandesIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -76,28 +128,48 @@ export interface FileRoutesByTo {
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/recharge': typeof AuthenticatedRechargeRoute
   '/retrait': typeof AuthenticatedRetraitRoute
+  '/admin/demandes': typeof AuthenticatedAdminDemandesRouteWithChildren
+  '/admin/logs': typeof AuthenticatedAdminLogsRoute
+  '/admin/paiements': typeof AuthenticatedAdminPaiementsRoute
+  '/admin/stats': typeof AuthenticatedAdminStatsRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
+  '/admin/demandes/$id': typeof AuthenticatedAdminDemandesIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/historique': typeof AuthenticatedHistoriqueRoute
   '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
   '/_authenticated/recharge': typeof AuthenticatedRechargeRoute
   '/_authenticated/retrait': typeof AuthenticatedRetraitRoute
+  '/_authenticated/admin/demandes': typeof AuthenticatedAdminDemandesRouteWithChildren
+  '/_authenticated/admin/logs': typeof AuthenticatedAdminLogsRoute
+  '/_authenticated/admin/paiements': typeof AuthenticatedAdminPaiementsRoute
+  '/_authenticated/admin/stats': typeof AuthenticatedAdminStatsRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/admin/demandes/$id': typeof AuthenticatedAdminDemandesIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/auth'
+    | '/admin'
     | '/dashboard'
     | '/historique'
     | '/notifications'
     | '/recharge'
     | '/retrait'
+    | '/admin/demandes'
+    | '/admin/logs'
+    | '/admin/paiements'
+    | '/admin/stats'
+    | '/admin/'
+    | '/admin/demandes/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -107,16 +179,29 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/recharge'
     | '/retrait'
+    | '/admin/demandes'
+    | '/admin/logs'
+    | '/admin/paiements'
+    | '/admin/stats'
+    | '/admin'
+    | '/admin/demandes/$id'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/_authenticated/historique'
     | '/_authenticated/notifications'
     | '/_authenticated/recharge'
     | '/_authenticated/retrait'
+    | '/_authenticated/admin/demandes'
+    | '/_authenticated/admin/logs'
+    | '/_authenticated/admin/paiements'
+    | '/_authenticated/admin/stats'
+    | '/_authenticated/admin/'
+    | '/_authenticated/admin/demandes/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -183,10 +268,93 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/stats': {
+      id: '/_authenticated/admin/stats'
+      path: '/stats'
+      fullPath: '/admin/stats'
+      preLoaderRoute: typeof AuthenticatedAdminStatsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/paiements': {
+      id: '/_authenticated/admin/paiements'
+      path: '/paiements'
+      fullPath: '/admin/paiements'
+      preLoaderRoute: typeof AuthenticatedAdminPaiementsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/logs': {
+      id: '/_authenticated/admin/logs'
+      path: '/logs'
+      fullPath: '/admin/logs'
+      preLoaderRoute: typeof AuthenticatedAdminLogsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/demandes': {
+      id: '/_authenticated/admin/demandes'
+      path: '/demandes'
+      fullPath: '/admin/demandes'
+      preLoaderRoute: typeof AuthenticatedAdminDemandesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/demandes/$id': {
+      id: '/_authenticated/admin/demandes/$id'
+      path: '/$id'
+      fullPath: '/admin/demandes/$id'
+      preLoaderRoute: typeof AuthenticatedAdminDemandesIdRouteImport
+      parentRoute: typeof AuthenticatedAdminDemandesRoute
+    }
   }
 }
 
+interface AuthenticatedAdminDemandesRouteChildren {
+  AuthenticatedAdminDemandesIdRoute: typeof AuthenticatedAdminDemandesIdRoute
+}
+
+const AuthenticatedAdminDemandesRouteChildren: AuthenticatedAdminDemandesRouteChildren =
+  {
+    AuthenticatedAdminDemandesIdRoute: AuthenticatedAdminDemandesIdRoute,
+  }
+
+const AuthenticatedAdminDemandesRouteWithChildren =
+  AuthenticatedAdminDemandesRoute._addFileChildren(
+    AuthenticatedAdminDemandesRouteChildren,
+  )
+
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminDemandesRoute: typeof AuthenticatedAdminDemandesRouteWithChildren
+  AuthenticatedAdminLogsRoute: typeof AuthenticatedAdminLogsRoute
+  AuthenticatedAdminPaiementsRoute: typeof AuthenticatedAdminPaiementsRoute
+  AuthenticatedAdminStatsRoute: typeof AuthenticatedAdminStatsRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminDemandesRoute: AuthenticatedAdminDemandesRouteWithChildren,
+  AuthenticatedAdminLogsRoute: AuthenticatedAdminLogsRoute,
+  AuthenticatedAdminPaiementsRoute: AuthenticatedAdminPaiementsRoute,
+  AuthenticatedAdminStatsRoute: AuthenticatedAdminStatsRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedHistoriqueRoute: typeof AuthenticatedHistoriqueRoute
   AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
@@ -195,6 +363,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedHistoriqueRoute: AuthenticatedHistoriqueRoute,
   AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
