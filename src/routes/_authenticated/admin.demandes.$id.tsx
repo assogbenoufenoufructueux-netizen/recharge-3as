@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { useServerFn } from "@tanstack/react-start";
+import { validateTransaction, rejectTransaction } from "@/lib/admin.functions";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -42,19 +44,12 @@ function DemandeDetail() {
     });
   }, [tx?.proof_url]);
 
-  const logAction = async (action: string, details: any) => {
-    if (!user) return;
-    await supabase.from("admin_logs").insert({ admin_id: user.id, action, target_id: id, details });
-  };
+  const validateFn = useServerFn(validateTransaction);
+  const rejectFn = useServerFn(rejectTransaction);
 
   const validate = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase
-        .from("transactions")
-        .update({ status: "validated", validated_at: new Date().toISOString(), validated_by: user!.id })
-        .eq("id", id);
-      if (error) throw error;
-      await logAction("validate_transaction", { amount: tx?.amount, type: tx?.type });
+      await validateFn({ data: { id } });
     },
     onSuccess: () => {
       toast.success("Demande validée");
@@ -68,12 +63,7 @@ function DemandeDetail() {
   const reject = useMutation({
     mutationFn: async () => {
       if (!reason.trim()) throw new Error("Motif requis");
-      const { error } = await supabase
-        .from("transactions")
-        .update({ status: "rejected", rejection_reason: reason.trim(), validated_by: user!.id })
-        .eq("id", id);
-      if (error) throw error;
-      await logAction("reject_transaction", { reason: reason.trim() });
+      await rejectFn({ data: { id, reason: reason.trim() } });
     },
     onSuccess: () => {
       toast.success("Demande rejetée");

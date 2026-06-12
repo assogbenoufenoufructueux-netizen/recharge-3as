@@ -3,21 +3,27 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { bootstrapFirstAdmin } from "@/lib/admin.functions";
 import { toast } from "sonner";
 import { Shield, Loader2 } from "lucide-react";
 
-/** Visible uniquement si aucun admin n'existe : permet au premier compte de devenir administrateur. */
+/** Visible uniquement si aucun admin n'existe (vérification serveur via RPC sécurisée). */
 export function PromoteAdminButton() {
   const { user, refreshRole, role } = useAuth();
   const qc = useQueryClient();
   const [loading, setLoading] = useState(false);
+  const bootstrap = useServerFn(bootstrapFirstAdmin);
 
   const { data: noAdmin } = useQuery({
     queryKey: ["any-admin"],
+    enabled: !!user,
     queryFn: async () => {
+      // bootstrap_first_admin renvoie false si un admin existe déjà ; on évite
+      // d'exposer la liste user_roles côté client.
       const { count } = await supabase
         .from("user_roles")
-        .select("*", { count: "exact", head: true })
+        .select("user_id", { count: "exact", head: true })
         .eq("role", "admin");
       return (count ?? 0) === 0;
     },
@@ -28,15 +34,20 @@ export function PromoteAdminButton() {
   const promote = async () => {
     if (!user) return;
     setLoading(true);
-    const { error } = await supabase.from("user_roles").insert({ user_id: user.id, role: "admin" });
-    setLoading(false);
-    if (error) {
-      toast.error("Impossible de devenir admin", { description: error.message });
-      return;
+    try {
+      const res = await bootstrap({});
+      if (!res.promoted) {
+        toast.error("Un administrateur existe déjà");
+      } else {
+        toast.success("Vous êtes maintenant administrateur");
+        await refreshRole();
+      }
+      qc.invalidateQueries({ queryKey: ["any-admin"] });
+    } catch (e: any) {
+      toast.error("Impossible de devenir admin", { description: e.message });
+    } finally {
+      setLoading(false);
     }
-    toast.success("Vous êtes maintenant administrateur");
-    await refreshRole();
-    qc.invalidateQueries({ queryKey: ["any-admin"] });
   };
 
   return (
