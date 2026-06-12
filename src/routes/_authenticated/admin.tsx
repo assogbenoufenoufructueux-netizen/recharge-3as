@@ -3,13 +3,13 @@ import { useAuth } from "@/lib/auth";
 import { Loader2, LayoutDashboard, ListChecks, CreditCard, BarChart3, FileText, ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const tabs = [
+const tabs: { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean }[] = [
   { to: "/admin", label: "Accueil", icon: LayoutDashboard, exact: true },
   { to: "/admin/demandes", label: "Demandes", icon: ListChecks },
   { to: "/admin/paiements", label: "Numéros", icon: CreditCard },
   { to: "/admin/stats", label: "Stats", icon: BarChart3 },
   { to: "/admin/logs", label: "Logs", icon: FileText },
-] as const;
+];
 
 export const Route = createFileRoute("/_authenticated/admin")({
   beforeLoad: () => {
