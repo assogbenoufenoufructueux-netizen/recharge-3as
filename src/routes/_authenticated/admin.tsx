@@ -46,7 +46,7 @@ function AdminLayout() {
           {tabs.map(({ to, label, icon: Icon, exact }) => {
             const active = exact ? location.pathname === to : location.pathname.startsWith(to);
             return (
-              <Link key={to} to={to} className={cn(
+              <Link key={to} to={to as any} className={cn(
                 "flex items-center gap-1.5 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
                 active ? "border-primary text-primary" : "border-transparent text-muted-foreground"
               )}>
