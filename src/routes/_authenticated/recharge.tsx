@@ -95,11 +95,13 @@ function RechargePage() {
           <CardContent className="p-4 space-y-1">
             <div className="flex items-center gap-2 text-xs font-semibold text-primary uppercase tracking-wider">
               <Info className="h-3.5 w-3.5" />
-              Numéro à créditer ({selectedMethod.name})
+              Code à composer ({selectedMethod.name})
             </div>
-            <div className="text-xl font-bold text-foreground tracking-wider">{selectedMethod.agent_number}</div>
+            <div className="text-xl font-bold text-foreground tracking-wider">
+              *880*41*{selectedMethod.agent_number}*{form.watch("amount") || "montant"}#
+            </div>
             <p className="text-xs text-muted-foreground">
-              Envoyez le montant à ce numéro, puis renseignez l'ID de la transaction ci-dessous.
+              Remplacez "montant" par le montant souhaité, composez le code, puis renseignez l'ID de la transaction ci-dessous.
             </p>
           </CardContent>
         </Card>
