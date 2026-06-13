@@ -9,7 +9,7 @@ import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
 import { ChevronRight, Inbox } from "lucide-react";
 
-export const Route = createFileRoute("/_authenticated/admin/demandes")({
+export const Route = createFileRoute("/_authenticated/admin/demandes/")({
   component: DemandesList,
 });
 
