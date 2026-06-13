@@ -117,21 +117,6 @@ function Dashboard() {
         </div>
       </div>
 
-      {/* Total */}
-      <Card className="shadow-card">
-        <CardContent className="p-4 flex items-center gap-3">
-          <div className="h-11 w-11 rounded-xl bg-gradient-brand flex items-center justify-center">
-            <TrendingUp className="h-5 w-5 text-primary-foreground" />
-          </div>
-          <div className="flex-1">
-            <div className="text-xs text-muted-foreground">Total rechargé</div>
-            <div className="text-xl font-bold text-foreground">
-              {(stats?.totalRecharged ?? 0).toLocaleString("fr-FR")} FCFA
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
       <PromoteAdminButton />
     </div>
   );
