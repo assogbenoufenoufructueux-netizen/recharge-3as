@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowDownToLine, ArrowUpFromLine, Clock, CheckCircle2, XCircle, TrendingUp, Sparkles, Copy } from "lucide-react";
+import { ArrowDownToLine, ArrowUpFromLine, Clock, CheckCircle2, XCircle, Sparkles, Copy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Card, CardContent } from "@/components/ui/card";
