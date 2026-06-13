@@ -22,6 +22,7 @@ import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminStatsRouteImport } from './routes/_authenticated/admin.stats'
 import { Route as AuthenticatedAdminPaiementsRouteImport } from './routes/_authenticated/admin.paiements'
 import { Route as AuthenticatedAdminLogsRouteImport } from './routes/_authenticated/admin.logs'
+import { Route as AuthenticatedAdminDemandesRouteImport } from './routes/_authenticated/admin.demandes'
 import { Route as AuthenticatedAdminDemandesIndexRouteImport } from './routes/_authenticated/admin.demandes.index'
 import { Route as AuthenticatedAdminDemandesIdRouteImport } from './routes/_authenticated/admin.demandes.$id'
 
@@ -91,17 +92,23 @@ const AuthenticatedAdminLogsRoute = AuthenticatedAdminLogsRouteImport.update({
   path: '/logs',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminDemandesRoute =
+  AuthenticatedAdminDemandesRouteImport.update({
+    id: '/demandes',
+    path: '/demandes',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminDemandesIndexRoute =
   AuthenticatedAdminDemandesIndexRouteImport.update({
-    id: '/demandes/',
-    path: '/demandes/',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAdminDemandesRoute,
   } as any)
 const AuthenticatedAdminDemandesIdRoute =
   AuthenticatedAdminDemandesIdRouteImport.update({
-    id: '/demandes/$id',
-    path: '/demandes/$id',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAdminDemandesRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -113,6 +120,7 @@ export interface FileRoutesByFullPath {
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/recharge': typeof AuthenticatedRechargeRoute
   '/retrait': typeof AuthenticatedRetraitRoute
+  '/admin/demandes': typeof AuthenticatedAdminDemandesRouteWithChildren
   '/admin/logs': typeof AuthenticatedAdminLogsRoute
   '/admin/paiements': typeof AuthenticatedAdminPaiementsRoute
   '/admin/stats': typeof AuthenticatedAdminStatsRoute
@@ -146,6 +154,7 @@ export interface FileRoutesById {
   '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
   '/_authenticated/recharge': typeof AuthenticatedRechargeRoute
   '/_authenticated/retrait': typeof AuthenticatedRetraitRoute
+  '/_authenticated/admin/demandes': typeof AuthenticatedAdminDemandesRouteWithChildren
   '/_authenticated/admin/logs': typeof AuthenticatedAdminLogsRoute
   '/_authenticated/admin/paiements': typeof AuthenticatedAdminPaiementsRoute
   '/_authenticated/admin/stats': typeof AuthenticatedAdminStatsRoute
@@ -164,6 +173,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/recharge'
     | '/retrait'
+    | '/admin/demandes'
     | '/admin/logs'
     | '/admin/paiements'
     | '/admin/stats'
@@ -196,6 +206,7 @@ export interface FileRouteTypes {
     | '/_authenticated/notifications'
     | '/_authenticated/recharge'
     | '/_authenticated/retrait'
+    | '/_authenticated/admin/demandes'
     | '/_authenticated/admin/logs'
     | '/_authenticated/admin/paiements'
     | '/_authenticated/admin/stats'
@@ -303,39 +314,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminLogsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/demandes': {
+      id: '/_authenticated/admin/demandes'
+      path: '/demandes'
+      fullPath: '/admin/demandes'
+      preLoaderRoute: typeof AuthenticatedAdminDemandesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/demandes/': {
       id: '/_authenticated/admin/demandes/'
-      path: '/demandes'
+      path: '/'
       fullPath: '/admin/demandes/'
       preLoaderRoute: typeof AuthenticatedAdminDemandesIndexRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      parentRoute: typeof AuthenticatedAdminDemandesRoute
     }
     '/_authenticated/admin/demandes/$id': {
       id: '/_authenticated/admin/demandes/$id'
-      path: '/demandes/$id'
+      path: '/$id'
       fullPath: '/admin/demandes/$id'
       preLoaderRoute: typeof AuthenticatedAdminDemandesIdRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      parentRoute: typeof AuthenticatedAdminDemandesRoute
     }
   }
 }
 
-interface AuthenticatedAdminRouteChildren {
-  AuthenticatedAdminLogsRoute: typeof AuthenticatedAdminLogsRoute
-  AuthenticatedAdminPaiementsRoute: typeof AuthenticatedAdminPaiementsRoute
-  AuthenticatedAdminStatsRoute: typeof AuthenticatedAdminStatsRoute
-  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+interface AuthenticatedAdminDemandesRouteChildren {
   AuthenticatedAdminDemandesIdRoute: typeof AuthenticatedAdminDemandesIdRoute
   AuthenticatedAdminDemandesIndexRoute: typeof AuthenticatedAdminDemandesIndexRoute
 }
 
+const AuthenticatedAdminDemandesRouteChildren: AuthenticatedAdminDemandesRouteChildren =
+  {
+    AuthenticatedAdminDemandesIdRoute: AuthenticatedAdminDemandesIdRoute,
+    AuthenticatedAdminDemandesIndexRoute: AuthenticatedAdminDemandesIndexRoute,
+  }
+
+const AuthenticatedAdminDemandesRouteWithChildren =
+  AuthenticatedAdminDemandesRoute._addFileChildren(
+    AuthenticatedAdminDemandesRouteChildren,
+  )
+
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminDemandesRoute: typeof AuthenticatedAdminDemandesRouteWithChildren
+  AuthenticatedAdminLogsRoute: typeof AuthenticatedAdminLogsRoute
+  AuthenticatedAdminPaiementsRoute: typeof AuthenticatedAdminPaiementsRoute
+  AuthenticatedAdminStatsRoute: typeof AuthenticatedAdminStatsRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminDemandesRoute: AuthenticatedAdminDemandesRouteWithChildren,
   AuthenticatedAdminLogsRoute: AuthenticatedAdminLogsRoute,
   AuthenticatedAdminPaiementsRoute: AuthenticatedAdminPaiementsRoute,
   AuthenticatedAdminStatsRoute: AuthenticatedAdminStatsRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
-  AuthenticatedAdminDemandesIdRoute: AuthenticatedAdminDemandesIdRoute,
-  AuthenticatedAdminDemandesIndexRoute: AuthenticatedAdminDemandesIndexRoute,
 }
 
 const AuthenticatedAdminRouteWithChildren =
@@ -370,3 +402,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
