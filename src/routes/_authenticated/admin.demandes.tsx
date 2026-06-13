@@ -21,7 +21,7 @@ function DemandesList() {
     queryFn: async () => {
       let q = supabase
         .from("transactions")
-        .select("*, profiles!transactions_user_id_fkey(full_name, phone)")
+        .select("*, profiles!transactions_user_id_profiles_fkey(full_name, phone)")
         .order("created_at", { ascending: false })
         .limit(100);
       if (filter !== "all") q = q.eq("status", filter);
