@@ -22,7 +22,7 @@ import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminStatsRouteImport } from './routes/_authenticated/admin.stats'
 import { Route as AuthenticatedAdminPaiementsRouteImport } from './routes/_authenticated/admin.paiements'
 import { Route as AuthenticatedAdminLogsRouteImport } from './routes/_authenticated/admin.logs'
-import { Route as AuthenticatedAdminDemandesRouteImport } from './routes/_authenticated/admin.demandes'
+import { Route as AuthenticatedAdminDemandesIndexRouteImport } from './routes/_authenticated/admin.demandes.index'
 import { Route as AuthenticatedAdminDemandesIdRouteImport } from './routes/_authenticated/admin.demandes.$id'
 
 const AuthRoute = AuthRouteImport.update({
@@ -91,17 +91,17 @@ const AuthenticatedAdminLogsRoute = AuthenticatedAdminLogsRouteImport.update({
   path: '/logs',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
-const AuthenticatedAdminDemandesRoute =
-  AuthenticatedAdminDemandesRouteImport.update({
-    id: '/demandes',
-    path: '/demandes',
+const AuthenticatedAdminDemandesIndexRoute =
+  AuthenticatedAdminDemandesIndexRouteImport.update({
+    id: '/demandes/',
+    path: '/demandes/',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminDemandesIdRoute =
   AuthenticatedAdminDemandesIdRouteImport.update({
-    id: '/$id',
-    path: '/$id',
-    getParentRoute: () => AuthenticatedAdminDemandesRoute,
+    id: '/demandes/$id',
+    path: '/demandes/$id',
+    getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -113,12 +113,12 @@ export interface FileRoutesByFullPath {
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/recharge': typeof AuthenticatedRechargeRoute
   '/retrait': typeof AuthenticatedRetraitRoute
-  '/admin/demandes': typeof AuthenticatedAdminDemandesRouteWithChildren
   '/admin/logs': typeof AuthenticatedAdminLogsRoute
   '/admin/paiements': typeof AuthenticatedAdminPaiementsRoute
   '/admin/stats': typeof AuthenticatedAdminStatsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/demandes/$id': typeof AuthenticatedAdminDemandesIdRoute
+  '/admin/demandes/': typeof AuthenticatedAdminDemandesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -128,12 +128,12 @@ export interface FileRoutesByTo {
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/recharge': typeof AuthenticatedRechargeRoute
   '/retrait': typeof AuthenticatedRetraitRoute
-  '/admin/demandes': typeof AuthenticatedAdminDemandesRouteWithChildren
   '/admin/logs': typeof AuthenticatedAdminLogsRoute
   '/admin/paiements': typeof AuthenticatedAdminPaiementsRoute
   '/admin/stats': typeof AuthenticatedAdminStatsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/demandes/$id': typeof AuthenticatedAdminDemandesIdRoute
+  '/admin/demandes': typeof AuthenticatedAdminDemandesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -146,12 +146,12 @@ export interface FileRoutesById {
   '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
   '/_authenticated/recharge': typeof AuthenticatedRechargeRoute
   '/_authenticated/retrait': typeof AuthenticatedRetraitRoute
-  '/_authenticated/admin/demandes': typeof AuthenticatedAdminDemandesRouteWithChildren
   '/_authenticated/admin/logs': typeof AuthenticatedAdminLogsRoute
   '/_authenticated/admin/paiements': typeof AuthenticatedAdminPaiementsRoute
   '/_authenticated/admin/stats': typeof AuthenticatedAdminStatsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/demandes/$id': typeof AuthenticatedAdminDemandesIdRoute
+  '/_authenticated/admin/demandes/': typeof AuthenticatedAdminDemandesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -164,12 +164,12 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/recharge'
     | '/retrait'
-    | '/admin/demandes'
     | '/admin/logs'
     | '/admin/paiements'
     | '/admin/stats'
     | '/admin/'
     | '/admin/demandes/$id'
+    | '/admin/demandes/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -179,12 +179,12 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/recharge'
     | '/retrait'
-    | '/admin/demandes'
     | '/admin/logs'
     | '/admin/paiements'
     | '/admin/stats'
     | '/admin'
     | '/admin/demandes/$id'
+    | '/admin/demandes'
   id:
     | '__root__'
     | '/'
@@ -196,12 +196,12 @@ export interface FileRouteTypes {
     | '/_authenticated/notifications'
     | '/_authenticated/recharge'
     | '/_authenticated/retrait'
-    | '/_authenticated/admin/demandes'
     | '/_authenticated/admin/logs'
     | '/_authenticated/admin/paiements'
     | '/_authenticated/admin/stats'
     | '/_authenticated/admin/'
     | '/_authenticated/admin/demandes/$id'
+    | '/_authenticated/admin/demandes/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -303,51 +303,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminLogsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/_authenticated/admin/demandes': {
-      id: '/_authenticated/admin/demandes'
+    '/_authenticated/admin/demandes/': {
+      id: '/_authenticated/admin/demandes/'
       path: '/demandes'
-      fullPath: '/admin/demandes'
-      preLoaderRoute: typeof AuthenticatedAdminDemandesRouteImport
+      fullPath: '/admin/demandes/'
+      preLoaderRoute: typeof AuthenticatedAdminDemandesIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/demandes/$id': {
       id: '/_authenticated/admin/demandes/$id'
-      path: '/$id'
+      path: '/demandes/$id'
       fullPath: '/admin/demandes/$id'
       preLoaderRoute: typeof AuthenticatedAdminDemandesIdRouteImport
-      parentRoute: typeof AuthenticatedAdminDemandesRoute
+      parentRoute: typeof AuthenticatedAdminRoute
     }
   }
 }
 
-interface AuthenticatedAdminDemandesRouteChildren {
-  AuthenticatedAdminDemandesIdRoute: typeof AuthenticatedAdminDemandesIdRoute
-}
-
-const AuthenticatedAdminDemandesRouteChildren: AuthenticatedAdminDemandesRouteChildren =
-  {
-    AuthenticatedAdminDemandesIdRoute: AuthenticatedAdminDemandesIdRoute,
-  }
-
-const AuthenticatedAdminDemandesRouteWithChildren =
-  AuthenticatedAdminDemandesRoute._addFileChildren(
-    AuthenticatedAdminDemandesRouteChildren,
-  )
-
 interface AuthenticatedAdminRouteChildren {
-  AuthenticatedAdminDemandesRoute: typeof AuthenticatedAdminDemandesRouteWithChildren
   AuthenticatedAdminLogsRoute: typeof AuthenticatedAdminLogsRoute
   AuthenticatedAdminPaiementsRoute: typeof AuthenticatedAdminPaiementsRoute
   AuthenticatedAdminStatsRoute: typeof AuthenticatedAdminStatsRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+  AuthenticatedAdminDemandesIdRoute: typeof AuthenticatedAdminDemandesIdRoute
+  AuthenticatedAdminDemandesIndexRoute: typeof AuthenticatedAdminDemandesIndexRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
-  AuthenticatedAdminDemandesRoute: AuthenticatedAdminDemandesRouteWithChildren,
   AuthenticatedAdminLogsRoute: AuthenticatedAdminLogsRoute,
   AuthenticatedAdminPaiementsRoute: AuthenticatedAdminPaiementsRoute,
   AuthenticatedAdminStatsRoute: AuthenticatedAdminStatsRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+  AuthenticatedAdminDemandesIdRoute: AuthenticatedAdminDemandesIdRoute,
+  AuthenticatedAdminDemandesIndexRoute: AuthenticatedAdminDemandesIndexRoute,
 }
 
 const AuthenticatedAdminRouteWithChildren =
