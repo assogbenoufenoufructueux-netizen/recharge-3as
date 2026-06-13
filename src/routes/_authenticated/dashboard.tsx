@@ -37,9 +37,6 @@ function Dashboard() {
         pending: list.filter((t) => t.status === "pending").length,
         validated: list.filter((t) => t.status === "validated").length,
         rejected: list.filter((t) => t.status === "rejected").length,
-        totalRecharged: list
-          .filter((t) => t.status === "validated" && t.type === "recharge")
-          .reduce((s, t) => s + Number(t.amount), 0),
       };
     },
     enabled: !!user,
