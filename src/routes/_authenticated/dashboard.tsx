@@ -112,8 +112,6 @@ function Dashboard() {
           <StatCard icon={XCircle} label="Rejetées" value={stats?.rejected ?? 0} color="text-destructive" bg="bg-destructive/10" />
         </div>
       </div>
-
-      <PromoteAdminButton />
     </div>
   );
 }
