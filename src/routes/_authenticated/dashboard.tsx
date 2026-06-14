@@ -6,7 +6,6 @@ import { useAuth } from "@/lib/auth";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { PromoteAdminButton } from "@/components/PromoteAdminButton";
 
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -113,8 +112,6 @@ function Dashboard() {
           <StatCard icon={XCircle} label="Rejetées" value={stats?.rejected ?? 0} color="text-destructive" bg="bg-destructive/10" />
         </div>
       </div>
-
-      <PromoteAdminButton />
     </div>
   );
 }
