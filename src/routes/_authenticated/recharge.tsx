@@ -92,15 +92,54 @@ function RechargePage() {
 
       {selectedMethod && (
         <Card className="bg-primary/5 border-primary/20">
-          <CardContent className="p-4 space-y-1">
+          <CardContent className="p-4 space-y-2">
             <div className="flex items-center gap-2 text-xs font-semibold text-primary uppercase tracking-wider">
               <Info className="h-3.5 w-3.5" />
-              Numéro à créditer ({selectedMethod.name})
+              {selectedMethod.provider === "mtn_momo" ? "Code à composer (MTN)" : `Numéro à créditer (${selectedMethod.name})`}
             </div>
-            <div className="text-xl font-bold text-foreground tracking-wider">{selectedMethod.agent_number}</div>
-            <p className="text-xs text-muted-foreground">
-              Envoyez le montant à ce numéro, puis renseignez l'ID de la transaction ci-dessous.
-            </p>
+            {selectedMethod.provider === "mtn_momo" ? (
+              <div className="space-y-2">
+                <div className="text-xl font-bold text-foreground tracking-wider">
+                  *880*41*234392*{form.watch("amount") || 0}#
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 h-9"
+                    onClick={async () => {
+                      const code = `*880*41*234392*${form.watch("amount") || 0}#`;
+                      await navigator.clipboard.writeText(code);
+                      toast.success("Code copié");
+                    }}
+                  >
+                    <Copy className="h-4 w-4 mr-1" /> Copier
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="default"
+                    size="sm"
+                    className="flex-1 h-9"
+                    asChild
+                  >
+                    <a href={`tel:*880*41*234392*${form.watch("amount") || 0}%23`}>
+                      <Phone className="h-4 w-4 mr-1" /> Composer
+                    </a>
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Composez ce code depuis votre téléphone, ou cliquez sur "Composer" pour le lancer automatiquement.
+                </p>
+              </div>
+            ) : (
+              <>
+                <div className="text-xl font-bold text-foreground tracking-wider">{selectedMethod.agent_number}</div>
+                <p className="text-xs text-muted-foreground">
+                  Envoyez le montant à ce numéro, puis renseignez l'ID de la transaction ci-dessous.
+                </p>
+              </>
+            )}
           </CardContent>
         </Card>
       )}
