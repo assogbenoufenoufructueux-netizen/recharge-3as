@@ -30,7 +30,7 @@ function DemandeDetail() {
     queryFn: async () => {
       const { data } = await supabase
         .from("transactions")
-        .select("*, profiles!transactions_user_id_profiles_fkey(full_name, phone)")
+        .select("*, profiles!transactions_user_id_fkey(full_name, phone)")
         .eq("id", id)
         .single();
       return data as any;

@@ -1,11 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowDownToLine, ArrowUpFromLine, Clock, CheckCircle2, XCircle, Sparkles, Copy } from "lucide-react";
+import { ArrowDownToLine, ArrowUpFromLine, Clock, CheckCircle2, XCircle, TrendingUp, Sparkles, Copy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { PromoteAdminButton } from "@/components/PromoteAdminButton";
 
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -36,6 +37,9 @@ function Dashboard() {
         pending: list.filter((t) => t.status === "pending").length,
         validated: list.filter((t) => t.status === "validated").length,
         rejected: list.filter((t) => t.status === "rejected").length,
+        totalRecharged: list
+          .filter((t) => t.status === "validated" && t.type === "recharge")
+          .reduce((s, t) => s + Number(t.amount), 0),
       };
     },
     enabled: !!user,
@@ -112,6 +116,23 @@ function Dashboard() {
           <StatCard icon={XCircle} label="Rejetées" value={stats?.rejected ?? 0} color="text-destructive" bg="bg-destructive/10" />
         </div>
       </div>
+
+      {/* Total */}
+      <Card className="shadow-card">
+        <CardContent className="p-4 flex items-center gap-3">
+          <div className="h-11 w-11 rounded-xl bg-gradient-brand flex items-center justify-center">
+            <TrendingUp className="h-5 w-5 text-primary-foreground" />
+          </div>
+          <div className="flex-1">
+            <div className="text-xs text-muted-foreground">Total rechargé</div>
+            <div className="text-xl font-bold text-foreground">
+              {(stats?.totalRecharged ?? 0).toLocaleString("fr-FR")} FCFA
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <PromoteAdminButton />
     </div>
   );
 }

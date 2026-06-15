@@ -14,8 +14,6 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 
-const CLIENT_UI_VERSION = "client-space-assistance-no-admin-total-v2";
-
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -122,35 +120,9 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <ClientUpdateReset />
         <Outlet />
         <Toaster position="top-center" richColors />
       </AuthProvider>
     </QueryClientProvider>
   );
-}
-
-function ClientUpdateReset() {
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const storedVersion = window.localStorage.getItem("3as-client-ui-version");
-    if (storedVersion === CLIENT_UI_VERSION) return;
-
-    window.localStorage.setItem("3as-client-ui-version", CLIENT_UI_VERSION);
-
-    if ("caches" in window) {
-      window.caches.keys().then((keys) => {
-        keys.forEach((key) => window.caches.delete(key));
-      });
-    }
-
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.getRegistrations().then((registrations) => {
-        registrations.forEach((registration) => registration.unregister());
-      });
-    }
-  }, []);
-
-  return null;
 }

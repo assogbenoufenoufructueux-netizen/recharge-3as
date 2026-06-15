@@ -1,1 +1,0 @@
-UPDATE public.payment_methods SET agent_number = '234392' WHERE name = 'MTN Mobile Money';

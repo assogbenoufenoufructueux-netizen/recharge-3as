@@ -1,4 +1,4 @@
-import { createFileRoute, Navigate, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
 import { MobileLayout } from "@/components/MobileLayout";
 import { Loader2 } from "lucide-react";
@@ -20,7 +20,7 @@ function AuthGate() {
   }
 
   if (!user) {
-    return <Navigate to="/auth" />;
+    throw redirect({ to: "/auth" });
   }
 
   return (

@@ -97,7 +97,7 @@ function PaiementsAdmin() {
             </Select>
           </div>
           <div className="space-y-1"><Label className="text-xs">Numéro agent</Label>
-            <Input value={form.agent_number} onChange={(e) => setForm({ ...form, agent_number: e.target.value })} placeholder="234392" />
+            <Input value={form.agent_number} onChange={(e) => setForm({ ...form, agent_number: e.target.value })} placeholder="+229 00 00 00 00" />
           </div>
           <Button onClick={() => create.mutate()} disabled={create.isPending} className="w-full">
             {create.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />} Enregistrer
