@@ -1,5 +1,5 @@
-import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,9 +31,12 @@ function AuthPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
 
-  if (!loading && user) {
-    throw redirect({ to: "/dashboard" });
-  }
+  useEffect(() => {
+    if (!loading && user) {
+      navigate({ to: "/dashboard", replace: true });
+    }
+  }, [loading, user, navigate]);
+
 
   return (
     <div className="min-h-screen bg-gradient-hero text-primary-foreground flex flex-col">
