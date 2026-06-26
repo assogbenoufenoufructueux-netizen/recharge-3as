@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/lib/auth";
 import { useServerFn } from "@tanstack/react-start";
 import { validateTransaction, rejectTransaction } from "@/lib/admin.functions";
 import { Card, CardContent } from "@/components/ui/card";
@@ -19,21 +18,29 @@ export const Route = createFileRoute("/_authenticated/admin/demandes/$id")({
 function DemandeDetail() {
   const { id } = useParams({ from: "/_authenticated/admin/demandes/$id" });
   const navigate = useNavigate();
-  const { user } = useAuth();
   const qc = useQueryClient();
   const [rejectMode, setRejectMode] = useState(false);
   const [reason, setReason] = useState("");
   const [proofUrl, setProofUrl] = useState<string | null>(null);
 
-  const { data: tx, isLoading } = useQuery({
+  const { data: tx, isLoading, error } = useQuery({
     queryKey: ["transaction", id],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("transactions")
-        .select("*, profiles!transactions_user_id_fkey(full_name, phone)")
+        .select("*")
         .eq("id", id)
         .single();
-      return data as any;
+      if (error) throw error;
+
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("full_name, phone")
+        .eq("id", data.user_id)
+        .maybeSingle();
+      if (profileError) throw profileError;
+
+      return { ...data, profiles: profile } as any;
     },
   });
 
@@ -73,8 +80,23 @@ function DemandeDetail() {
     onError: (e: any) => toast.error("Erreur", { description: e.message }),
   });
 
-  if (isLoading || !tx) {
+  if (isLoading) {
     return <div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
+  }
+
+  if (error || !tx) {
+    return (
+      <div className="p-4 max-w-md mx-auto space-y-4">
+        <button onClick={() => navigate({ to: "/admin/demandes" })} className="flex items-center gap-1 text-sm text-muted-foreground">
+          <ChevronLeft className="h-4 w-4" /> Retour
+        </button>
+        <Card className="border-destructive/40">
+          <CardContent className="p-4 text-sm text-destructive">
+            Impossible d'ouvrir cette demande. Réessayez dans un instant.
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   return (
