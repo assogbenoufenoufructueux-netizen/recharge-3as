@@ -16,17 +16,30 @@ export const Route = createFileRoute("/_authenticated/admin/demandes")({
 function DemandesList() {
   const [filter, setFilter] = useState<"pending" | "validated" | "rejected" | "all">("pending");
 
-  const { data } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["admin-transactions", filter],
     queryFn: async () => {
       let q = supabase
         .from("transactions")
-        .select("*, profiles!transactions_user_id_fkey(full_name, phone)")
+        .select("*")
         .order("created_at", { ascending: false })
         .limit(100);
       if (filter !== "all") q = q.eq("status", filter);
-      const { data } = await q;
-      return data ?? [];
+      const { data: transactions, error } = await q;
+      if (error) throw error;
+
+      const list = transactions ?? [];
+      const userIds = Array.from(new Set(list.map((t) => t.user_id).filter(Boolean)));
+      if (userIds.length === 0) return list;
+
+      const { data: profiles, error: profilesError } = await supabase
+        .from("profiles")
+        .select("id, full_name, phone")
+        .in("id", userIds);
+      if (profilesError) throw profilesError;
+
+      const profilesById = new Map((profiles ?? []).map((p) => [p.id, p]));
+      return list.map((t) => ({ ...t, profiles: profilesById.get(t.user_id) ?? null }));
     },
     refetchInterval: 5000,
   });
@@ -41,6 +54,22 @@ function DemandesList() {
           <TabsTrigger value="all">Toutes</TabsTrigger>
         </TabsList>
       </Tabs>
+
+      {isLoading && (
+        <Card className="border-dashed">
+          <CardContent className="p-8 text-center text-sm text-muted-foreground">
+            Chargement des demandes…
+          </CardContent>
+        </Card>
+      )}
+
+      {error && (
+        <Card className="border-destructive/40">
+          <CardContent className="p-4 text-sm text-destructive">
+            Impossible de charger les demandes. Réessayez dans un instant.
+          </CardContent>
+        </Card>
+      )}
 
       {(!data || data.length === 0) && (
         <Card className="border-dashed">
