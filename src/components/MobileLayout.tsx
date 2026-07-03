@@ -6,6 +6,8 @@ import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { NotificationBell } from "./NotificationBell";
 import { cn } from "@/lib/utils";
+import logoCircle from "@/assets/logo-circle.png.asset.json";
+import logoBanner from "@/assets/logo-banner.png.asset.json";
 
 const navItems = [
   { to: "/dashboard", label: "Accueil", icon: Home },
