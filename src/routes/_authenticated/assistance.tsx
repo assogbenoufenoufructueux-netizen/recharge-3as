@@ -5,8 +5,8 @@ import { PageHeader } from "@/components/PageHeader";
 import { Phone, MessageCircle, Clock, Copy } from "lucide-react";
 import { toast } from "sonner";
 
-const SUPPORT_PHONE = "+229 01 00 00 00 00"; // Modifiez avec votre numéro
-const SUPPORT_WHATSAPP = "2290100000000"; // Modifiez avec votre numéro WhatsApp (sans + ni espaces)
+const SUPPORT_PHONE = "+229 01 94 98 93 97";
+const SUPPORT_WHATSAPP = "2290194989397";
 
 export const Route = createFileRoute("/_authenticated/assistance")({
   component: AssistancePage,
