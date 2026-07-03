@@ -43,7 +43,7 @@ export function MobileLayout({ children }: { children: ReactNode }) {
       <main className="flex-1 pb-24">{children}</main>
 
       <nav className="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-border pb-safe shadow-elevated">
-        <div className="grid grid-cols-4 gap-1 px-2 pt-2">
+        <div className="grid grid-cols-5 gap-1 px-2 pt-2">
           {navItems.map(({ to, label, icon: Icon }) => {
             const active = location.pathname === to || (to !== "/dashboard" && location.pathname.startsWith(to));
             return (
