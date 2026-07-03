@@ -6,6 +6,8 @@ import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { NotificationBell } from "./NotificationBell";
 import { cn } from "@/lib/utils";
+import logoCircle from "@/assets/logo-circle.png.asset.json";
+import logoBanner from "@/assets/logo-banner.png.asset.json";
 
 const navItems = [
   { to: "/dashboard", label: "Accueil", icon: Home },
@@ -22,8 +24,8 @@ export function MobileLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="sticky top-0 z-30 bg-gradient-hero text-primary-foreground pt-safe shadow-elevated">
-        <div className="flex items-center justify-between px-4 py-3">
-          <Logo />
+        <div className="flex items-center justify-between px-4 py-3 gap-2">
+          <Logo compact />
           <div className="flex items-center gap-1">
             {role === "admin" && (
               <Link to="/admin">
@@ -36,11 +38,21 @@ export function MobileLayout({ children }: { children: ReactNode }) {
             <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10" onClick={() => signOut()}>
               <LogOut className="h-5 w-5" />
             </Button>
+            <div className="ml-1 h-11 w-11 rounded-full bg-white shadow-elevated ring-2 ring-white/40 overflow-hidden flex items-center justify-center">
+              <img src={logoCircle.url} alt="3AS Recharge" className="h-full w-full object-contain" />
+            </div>
           </div>
         </div>
       </header>
 
-      <main className="flex-1 pb-24">{children}</main>
+      <main className="flex-1 pb-24">
+        {children}
+        <div className="mt-6 px-4">
+          <div className="w-full overflow-hidden rounded-2xl bg-black shadow-elevated">
+            <img src={logoBanner.url} alt="3AS Recharge" className="w-full h-auto object-contain" />
+          </div>
+        </div>
+      </main>
 
       <nav className="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-border pb-safe shadow-elevated">
         <div className="grid grid-cols-5 gap-1 px-2 pt-2">
