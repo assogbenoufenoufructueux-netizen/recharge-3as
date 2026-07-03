@@ -24,8 +24,8 @@ export function MobileLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="sticky top-0 z-30 bg-gradient-hero text-primary-foreground pt-safe shadow-elevated">
-        <div className="flex items-center justify-between px-4 py-3">
-          <Logo />
+        <div className="flex items-center justify-between px-4 py-3 gap-2">
+          <Logo compact />
           <div className="flex items-center gap-1">
             {role === "admin" && (
               <Link to="/admin">
@@ -38,6 +38,9 @@ export function MobileLayout({ children }: { children: ReactNode }) {
             <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10" onClick={() => signOut()}>
               <LogOut className="h-5 w-5" />
             </Button>
+            <div className="ml-1 h-11 w-11 rounded-full bg-white shadow-elevated ring-2 ring-white/40 overflow-hidden flex items-center justify-center">
+              <img src={logoCircle.url} alt="3AS Recharge" className="h-full w-full object-contain" />
+            </div>
           </div>
         </div>
       </header>
