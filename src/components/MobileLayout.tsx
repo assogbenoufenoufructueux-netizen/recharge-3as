@@ -12,6 +12,7 @@ const navItems = [
   { to: "/recharge", label: "Recharge", icon: ArrowDownToLine },
   { to: "/retrait", label: "Retrait", icon: ArrowUpFromLine },
   { to: "/historique", label: "Historique", icon: History },
+  { to: "/assistance", label: "Assistance", icon: Headphones },
 ] as const;
 
 export function MobileLayout({ children }: { children: ReactNode }) {
