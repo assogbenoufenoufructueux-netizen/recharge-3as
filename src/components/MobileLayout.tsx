@@ -45,7 +45,14 @@ export function MobileLayout({ children }: { children: ReactNode }) {
         </div>
       </header>
 
-      <main className="flex-1 pb-24">{children}</main>
+      <main className="flex-1 pb-24">
+        {children}
+        <div className="mt-6 px-4">
+          <div className="w-full overflow-hidden rounded-2xl bg-black shadow-elevated">
+            <img src={logoBanner.url} alt="3AS Recharge" className="w-full h-auto object-contain" />
+          </div>
+        </div>
+      </main>
 
       <nav className="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-border pb-safe shadow-elevated">
         <div className="grid grid-cols-5 gap-1 px-2 pt-2">
