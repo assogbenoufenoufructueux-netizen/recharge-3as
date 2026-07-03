@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Home, ArrowDownToLine, ArrowUpFromLine, History, Bell, LogOut, Shield } from "lucide-react";
+import { Home, ArrowDownToLine, ArrowUpFromLine, History, Headphones, Bell, LogOut, Shield } from "lucide-react";
 import { type ReactNode } from "react";
 import { Logo } from "./Logo";
 import { useAuth } from "@/lib/auth";
