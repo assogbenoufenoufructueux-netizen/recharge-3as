@@ -74,7 +74,7 @@ function AssistancePage() {
             </div>
             <div className="flex-1 min-w-0">
               <div className="font-semibold text-foreground">Disponibilité</div>
-              <div className="text-xs text-muted-foreground">Lun - Sam : 08h00 - 20h00</div>
+              <div className="text-xs text-muted-foreground">Lun - Dim : 07h00 - 00h00</div>
             </div>
           </CardContent>
         </Card>
