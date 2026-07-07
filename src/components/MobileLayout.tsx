@@ -49,7 +49,7 @@ export function MobileLayout({ children }: { children: ReactNode }) {
         {children}
         <div className="mt-6 px-4">
           <div className="w-full overflow-hidden rounded-2xl bg-black shadow-elevated">
-            <img src={logoBanner.url} alt="3AS Recharge" className="w-full h-auto object-contain" />
+            <img src={logoBanner.url} alt="3AS Recharge" className="w-full h-[5cm] object-contain" />
           </div>
         </div>
       </main>
