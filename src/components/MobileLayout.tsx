@@ -39,7 +39,7 @@ export function MobileLayout({ children }: { children: ReactNode }) {
               <LogOut className="h-5 w-5" />
             </Button>
             <div className="ml-1 h-11 w-11 rounded-full bg-white shadow-elevated ring-2 ring-white/40 overflow-hidden flex items-center justify-center">
-              <img src={logoCircle.url} alt="3AS Recharge" className="h-full w-full object-contain" />
+              <img src={logoBanner.url} alt="3AS Recharge" className="h-full w-full object-contain" />
             </div>
           </div>
         </div>
@@ -49,7 +49,7 @@ export function MobileLayout({ children }: { children: ReactNode }) {
         {children}
         <div className="mt-6 px-4">
           <div className="w-full overflow-hidden rounded-2xl bg-black shadow-elevated">
-            <img src={logoBanner.url} alt="3AS Recharge" className="w-full h-[2.5cm] object-contain" />
+            <img src={logoCircle.url} alt="3AS Recharge" className="w-full h-[2.5cm] object-contain" />
           </div>
         </div>
       </main>
