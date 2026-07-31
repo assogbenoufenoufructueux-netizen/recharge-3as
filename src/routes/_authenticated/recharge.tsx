@@ -88,6 +88,7 @@ function RechargePage() {
       toast.error("Erreur", { description: error.message });
       return;
     }
+    localStorage.setItem("last_id_1xbet", values.id_1xbet);
     toast.success("Demande envoyée !", { description: "Votre recharge est en attente de validation." });
     navigate({ to: "/historique" });
   };
@@ -157,7 +158,7 @@ function RechargePage() {
               <Input inputMode="numeric" placeholder="Ex : 123456789" {...form.register("id_1xbet")} />
             </Field>
 
-            <Field label="Montant (FCFA)" error={form.formState.errors.amount?.message}>
+            <Field label="Montant (FCFA) — minimum : 100 FCFA" error={form.formState.errors.amount?.message}>
               <Input type="number" inputMode="numeric" placeholder="1000" {...form.register("amount")} />
             </Field>
 
