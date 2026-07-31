@@ -42,7 +42,7 @@ function RechargePage() {
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
-    defaultValues: { id_1xbet: "", amount: 0, payment_method_id: "", tx_id: "" },
+    defaultValues: { id_1xbet: "", amount: 100, payment_method_id: "", tx_id: "" },
   });
 
   // Pré-remplit l'ID 1XBET utilisé lors de la dernière recharge
