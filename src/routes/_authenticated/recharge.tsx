@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Loader2, Upload, Info, Copy, Phone } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -45,6 +45,12 @@ function RechargePage() {
     defaultValues: { id_1xbet: "", amount: 0, payment_method_id: "", tx_id: "" },
   });
 
+  // Pré-remplit l'ID 1XBET utilisé lors de la dernière recharge
+  useEffect(() => {
+    const saved = localStorage.getItem("last_id_1xbet");
+    if (saved) form.setValue("id_1xbet", saved);
+  }, []);
+
   const selectedMethod = methods?.find((m) => m.id === form.watch("payment_method_id"));
 
   const onSubmit = async (values: z.infer<typeof schema>) => {
@@ -82,6 +88,7 @@ function RechargePage() {
       toast.error("Erreur", { description: error.message });
       return;
     }
+    localStorage.setItem("last_id_1xbet", values.id_1xbet);
     toast.success("Demande envoyée !", { description: "Votre recharge est en attente de validation." });
     navigate({ to: "/historique" });
   };
@@ -151,7 +158,7 @@ function RechargePage() {
               <Input inputMode="numeric" placeholder="Ex : 123456789" {...form.register("id_1xbet")} />
             </Field>
 
-            <Field label="Montant (FCFA)" error={form.formState.errors.amount?.message}>
+            <Field label="Montant (FCFA) — minimum : 100 FCFA" error={form.formState.errors.amount?.message}>
               <Input type="number" inputMode="numeric" placeholder="1000" {...form.register("amount")} />
             </Field>
 
