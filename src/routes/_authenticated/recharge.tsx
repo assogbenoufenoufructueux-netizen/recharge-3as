@@ -96,6 +96,7 @@ function RechargePage() {
       return;
     }
     localStorage.setItem("last_id_1xbet", values.id_1xbet);
+    localStorage.setItem("last_amount", String(values.amount));
     toast.success("Demande envoyée !", { description: "Votre recharge est en attente de validation." });
     navigate({ to: "/historique" });
   };
