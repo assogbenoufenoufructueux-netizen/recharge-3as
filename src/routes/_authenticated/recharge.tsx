@@ -42,13 +42,20 @@ function RechargePage() {
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
-    defaultValues: { id_1xbet: "", amount: 100, payment_method_id: "", tx_id: "" },
+    defaultValues: {
+      id_1xbet: "",
+      amount: Number(localStorage.getItem("last_amount") ?? "100") || 100,
+      payment_method_id: "",
+      tx_id: "",
+    },
   });
 
-  // Pré-remplit l'ID 1XBET utilisé lors de la dernière recharge
+  // Pré-remplit l'ID 1XBET et le montant utilisés lors de la dernière recharge
   useEffect(() => {
-    const saved = localStorage.getItem("last_id_1xbet");
-    if (saved) form.setValue("id_1xbet", saved);
+    const savedId = localStorage.getItem("last_id_1xbet");
+    if (savedId) form.setValue("id_1xbet", savedId);
+    const savedAmount = localStorage.getItem("last_amount");
+    if (savedAmount) form.setValue("amount", Number(savedAmount) || 100, { shouldValidate: true });
   }, []);
 
   const selectedMethod = methods?.find((m) => m.id === form.watch("payment_method_id"));
