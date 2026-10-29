@@ -3,12 +3,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useServerFn } from "@tanstack/react-start";
-import { validateTransaction, rejectTransaction } from "@/lib/admin.functions";
+import { validateTransaction, rejectTransaction, retryCredit, forceManualCredit } from "@/lib/admin.functions";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { StatusBadge, TypeBadge } from "@/components/StatusBadge";
-import { ChevronLeft, CheckCircle2, XCircle, Loader2, User, Phone, Hash, CreditCard, FileText, Image as ImageIcon } from "lucide-react";
+import { ChevronLeft, CheckCircle2, XCircle, Loader2, User, Phone, Hash, CreditCard, FileText, Image as ImageIcon, RefreshCw, Edit3, MapPin, Globe } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/admin/demandes/$id")({
@@ -35,7 +35,7 @@ function DemandeDetail() {
 
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
-        .select("full_name, phone")
+        .select("full_name, phone, city, district")
         .eq("id", data.user_id)
         .maybeSingle();
       if (profileError) throw profileError;
@@ -53,6 +53,10 @@ function DemandeDetail() {
 
   const validateFn = useServerFn(validateTransaction);
   const rejectFn = useServerFn(rejectTransaction);
+  const retryFn = useServerFn(retryCredit);
+  const forceManualFn = useServerFn(forceManualCredit);
+  const [manualMode, setManualMode] = useState(false);
+  const [manualComment, setManualComment] = useState("");
 
   const validate = useMutation({
     mutationFn: async () => {
@@ -74,6 +78,29 @@ function DemandeDetail() {
     },
     onSuccess: () => {
       toast.success("Demande rejetée");
+      qc.invalidateQueries({ queryKey: ["admin-transactions"] });
+      navigate({ to: "/admin/demandes" });
+    },
+    onError: (e: any) => toast.error("Erreur", { description: e.message }),
+  });
+
+  const retry = useMutation({
+    mutationFn: async () => await retryFn({ data: { id } }),
+    onSuccess: () => {
+      toast.success("Relance en cours...");
+      qc.invalidateQueries({ queryKey: ["admin-transactions"] });
+      qc.invalidateQueries({ queryKey: ["transaction", id] });
+    },
+    onError: (e: any) => toast.error("Erreur relance", { description: e.message }),
+  });
+
+  const forceManual = useMutation({
+    mutationFn: async () => {
+      if (!manualComment.trim()) throw new Error("Commentaire requis");
+      await forceManualFn({ data: { id, comment: manualComment.trim() } });
+    },
+    onSuccess: () => {
+      toast.success("Crédité manuellement");
       qc.invalidateQueries({ queryKey: ["admin-transactions"] });
       navigate({ to: "/admin/demandes" });
     },
@@ -120,10 +147,23 @@ function DemandeDetail() {
           <div className="space-y-2 pt-2 border-t border-border">
             <Row icon={User} label="Client" value={tx.profiles?.full_name ?? "—"} />
             <Row icon={Phone} label="Téléphone" value={tx.profiles?.phone ?? "—"} />
-            <Row icon={Hash} label="ID 1XBET" value={tx.id_1xbet} mono />
+            {tx.recipient_name && <Row icon={User} label="Nom bénéficiaire" value={tx.recipient_name} />}
+            {tx.recipient_country && (
+              <Row icon={Globe} label="Pays" value={tx.recipient_country === "TG" ? "Togo" : "Bénin"} />
+            )}
+            {tx.app_code && <Row icon={Hash} label="Application" value={tx.app_code.toUpperCase()} />}
+            <Row icon={Hash} label="ID Joueur" value={tx.id_1xbet} mono />
             <Row icon={CreditCard} label="Moyen" value={tx.payment_method_label} />
             {tx.tx_id && <Row icon={FileText} label={tx.type === "recharge" ? "ID translation" : "Code retrait"} value={tx.tx_id} mono />}
             {tx.recipient_number && <Row icon={Phone} label="Numéro réception" value={tx.recipient_number} mono />}
+            {(tx.profiles?.city || tx.profiles?.district) && (
+              <Row
+                icon={MapPin}
+                label="Ville / Quartier"
+                value={[tx.profiles?.city, tx.profiles?.district].filter(Boolean).join(", ")}
+              />
+            )}
+            {tx.xbet_payout_ref && <Row icon={FileText} label="Réf encaissement 1XBET" value={tx.xbet_payout_ref} mono />}
           </div>
 
           {proofUrl && (
@@ -166,6 +206,34 @@ function DemandeDetail() {
               <Button variant="outline" onClick={() => setRejectMode(false)}>Annuler</Button>
               <Button variant="destructive" onClick={() => reject.mutate()} disabled={reject.isPending || !reason.trim()}>
                 {reject.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />} Confirmer rejet
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {tx.status === "failed_credit" && !manualMode && (
+        <div className="grid grid-cols-2 gap-3">
+          <Button variant="outline" className="h-12 border-primary text-primary hover:bg-primary/10" onClick={() => retry.mutate()} disabled={retry.isPending}>
+            {retry.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <RefreshCw className="h-4 w-4 mr-2" />}
+            Relancer 1XBET
+          </Button>
+          <Button className="h-12 bg-secondary text-secondary-foreground hover:bg-secondary/90" onClick={() => setManualMode(true)}>
+            <Edit3 className="h-4 w-4 mr-2" /> Forcer manuel
+          </Button>
+        </div>
+      )}
+
+      {tx.status === "failed_credit" && manualMode && (
+        <Card className="border-secondary/50">
+          <CardContent className="p-4 space-y-3">
+            <div className="text-sm font-semibold">Validation manuelle</div>
+            <p className="text-xs text-muted-foreground">Si vous avez crédité le client manuellement, ajoutez un commentaire pour valider.</p>
+            <Textarea value={manualComment} onChange={(e) => setManualComment(e.target.value)} placeholder="Ex: Crédité via console 1xbet..." rows={2} />
+            <div className="grid grid-cols-2 gap-2">
+              <Button variant="outline" onClick={() => setManualMode(false)}>Annuler</Button>
+              <Button onClick={() => forceManual.mutate()} disabled={forceManual.isPending || !manualComment.trim()}>
+                {forceManual.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />} Valider
               </Button>
             </div>
           </CardContent>

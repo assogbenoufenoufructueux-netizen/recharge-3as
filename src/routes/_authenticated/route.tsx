@@ -10,14 +10,16 @@ export const Route = createFileRoute("/_authenticated")({
 });
 
 function AuthGate() {
-  const { user, loading } = useAuth();
+  const { user, loading, isVerified } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && !user) {
-      navigate({ to: "/auth", replace: true });
+    if (!loading) {
+      if (!user) {
+        navigate({ to: "/auth", replace: true });
+      }
     }
-  }, [loading, user, navigate]);
+  }, [loading, user, isVerified, navigate]);
 
   if (loading || !user) {
     return (

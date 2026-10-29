@@ -1,13 +1,11 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Home, ArrowDownToLine, ArrowUpFromLine, History, Headphones, Bell, LogOut, Shield } from "lucide-react";
+import { Home, ArrowDownToLine, ArrowUpFromLine, History, Headphones, Bell, LogOut, Shield, AlertTriangle } from "lucide-react";
 import { type ReactNode } from "react";
 import { Logo } from "./Logo";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { NotificationBell } from "./NotificationBell";
 import { cn } from "@/lib/utils";
-import logoCircle from "@/assets/logo-circle.png.asset.json";
-import logoBanner from "@/assets/logo-banner.png.asset.json";
 
 const navItems = [
   { to: "/dashboard", label: "Accueil", icon: Home },
@@ -18,7 +16,7 @@ const navItems = [
 ] as const;
 
 export function MobileLayout({ children }: { children: ReactNode }) {
-  const { signOut, role } = useAuth();
+  const { signOut, role, isVerified } = useAuth();
   const location = useLocation();
 
   return (
@@ -38,18 +36,27 @@ export function MobileLayout({ children }: { children: ReactNode }) {
             <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10" onClick={() => signOut()}>
               <LogOut className="h-5 w-5" />
             </Button>
-            <div className="ml-1 h-11 w-11 rounded-full bg-white shadow-elevated ring-2 ring-white/40 overflow-hidden flex items-center justify-center">
-              <img src={logoBanner.url} alt="3AS Recharge" className="h-full w-full object-contain" />
+            <div className="ml-1 h-11 w-11 rounded-full bg-white shadow-elevated ring-2 ring-white/40 overflow-hidden flex items-center justify-center p-1">
+              <img src="/logo.svg" alt="3AS Recharge" className="h-full w-full object-contain" />
             </div>
           </div>
         </div>
+        {isVerified === false && (
+          <Link to="/verification" className="block bg-destructive/90 text-destructive-foreground px-4 py-2 text-xs text-center font-medium shadow-inner animate-in fade-in slide-in-from-top-2">
+            <div className="flex items-center justify-center gap-2">
+              <AlertTriangle className="h-4 w-4" />
+              <span>Compte non vérifié. Cliquez ici pour l'activer.</span>
+            </div>
+          </Link>
+        )}
       </header>
 
       <main className="flex-1 pb-24">
         {children}
         <div className="mt-6 px-4">
-          <div className="w-full overflow-hidden rounded-2xl bg-black shadow-elevated">
-            <img src={logoCircle.url} alt="3AS Recharge" className="w-full h-[2.5cm] object-contain" />
+          <div className="w-full overflow-hidden rounded-2xl bg-black shadow-elevated flex items-center justify-center p-4 h-[2.5cm] relative">
+            <div className="absolute inset-0 bg-cover bg-center opacity-40" style={{ backgroundImage: "url('/sports_blue_bg.png')" }} />
+            <img src="/logo.svg" alt="3AS Recharge" className="h-full object-contain max-w-full relative z-10 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]" />
           </div>
         </div>
       </main>

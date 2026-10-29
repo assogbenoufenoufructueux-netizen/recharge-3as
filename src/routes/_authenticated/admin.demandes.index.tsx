@@ -14,7 +14,7 @@ export const Route = createFileRoute("/_authenticated/admin/demandes/")({
 });
 
 function DemandesList() {
-  const [filter, setFilter] = useState<"pending" | "validated" | "rejected" | "all">("pending");
+  const [filter, setFilter] = useState<"pending" | "awaiting_payment" | "paid" | "crediting" | "validated" | "failed_credit" | "rejected" | "all">("pending");
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["admin-transactions", filter],
@@ -47,8 +47,9 @@ function DemandesList() {
   return (
     <div className="p-4 max-w-md mx-auto space-y-4">
       <Tabs value={filter} onValueChange={(v) => setFilter(v as typeof filter)}>
-        <TabsList className="grid grid-cols-4 w-full">
+        <TabsList className="grid grid-cols-5 w-full">
           <TabsTrigger value="pending">Attente</TabsTrigger>
+          <TabsTrigger value="failed_credit" className="text-destructive">Échecs Crédit</TabsTrigger>
           <TabsTrigger value="validated">Validées</TabsTrigger>
           <TabsTrigger value="rejected">Rejetées</TabsTrigger>
           <TabsTrigger value="all">Toutes</TabsTrigger>

@@ -13,6 +13,11 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
+import { registerSW } from "virtual:pwa-register";
+
+if (typeof window !== "undefined") {
+  registerSW({ immediate: true });
+}
 
 function NotFoundComponent() {
   return (
@@ -36,8 +41,8 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: unknown; reset: () => void }) {
-  console.error(error);
+function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+  console.error("TANSTACK ERROR BOUNDARY:", error);
   const router = useRouter();
   useEffect(() => {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
@@ -47,10 +52,15 @@ function ErrorComponent({ error, reset }: { error: unknown; reset: () => void })
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          Cette page n'a pas pu se charger
+          Oups ! L'application a rencontré un problème.
         </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Une erreur est survenue. Veuillez réessayer.
+        <div className="mt-4 p-3 bg-destructive/10 text-destructive border border-destructive/20 rounded-md text-left text-xs overflow-auto max-h-40">
+          <strong>{error.name}:</strong> {error.message}
+          <br/>
+          {error.stack?.substring(0, 300)}
+        </div>
+        <p className="mt-4 text-sm text-muted-foreground">
+          Si le problème persiste, déconnectez-vous et reconnectez-vous.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
@@ -60,14 +70,18 @@ function ErrorComponent({ error, reset }: { error: unknown; reset: () => void })
             }}
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Réessayer
+            Rafraîchir
           </button>
-          <a
-            href="/"
+          <button
+            onClick={async () => {
+              const { supabase } = await import("@/integrations/supabase/client");
+              await supabase.auth.signOut();
+              window.location.href = "/auth";
+            }}
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
-            Accueil
-          </a>
+            Se déconnecter
+          </button>
         </div>
       </div>
     </div>
@@ -89,6 +103,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary" },
     ],
     links: [
+      { rel: "icon", type: "image/svg+xml", href: "/logo.svg" },
       { rel: "stylesheet", href: appCss },
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "apple-touch-icon", href: "/icon-192.png" },
