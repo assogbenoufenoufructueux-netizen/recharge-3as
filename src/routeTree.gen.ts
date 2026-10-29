@@ -19,13 +19,19 @@ import { Route as AuthenticatedHistoriqueRouteImport } from './routes/_authentic
 import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
 import { Route as AuthenticatedRechargeRouteImport } from './routes/_authenticated/recharge'
 import { Route as AuthenticatedRetraitRouteImport } from './routes/_authenticated/retrait'
+import { Route as AuthenticatedVerificationRouteImport } from './routes/_authenticated/verification'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedAdminClientsRouteImport } from './routes/_authenticated/admin.clients'
 import { Route as AuthenticatedAdminDemandesRouteImport } from './routes/_authenticated/admin.demandes'
 import { Route as AuthenticatedAdminLogsRouteImport } from './routes/_authenticated/admin.logs'
 import { Route as AuthenticatedAdminPaiementsRouteImport } from './routes/_authenticated/admin.paiements'
+import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin.settings'
 import { Route as AuthenticatedAdminStatsRouteImport } from './routes/_authenticated/admin.stats'
 import { Route as AuthenticatedAdminDemandesIndexRouteImport } from './routes/_authenticated/admin.demandes.index'
 import { Route as AuthenticatedAdminDemandesIdRouteImport } from './routes/_authenticated/admin.demandes.$id'
+import { Route as ApiPublicCronExpirePendingRouteImport } from './routes/api/public/cron/expire-pending'
+import { Route as ApiPublicCronSyncFedapayRouteImport } from './routes/api/public/cron/sync-fedapay'
+import { Route as ApiPublicWebhooksAggregatorRouteImport } from './routes/api/public/webhooks/aggregator'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -77,11 +83,23 @@ const AuthenticatedRetraitRoute = AuthenticatedRetraitRouteImport.update({
   path: '/retrait',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedVerificationRoute =
+  AuthenticatedVerificationRouteImport.update({
+    id: '/verification',
+    path: '/verification',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminClientsRoute =
+  AuthenticatedAdminClientsRouteImport.update({
+    id: '/clients',
+    path: '/clients',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminDemandesRoute =
   AuthenticatedAdminDemandesRouteImport.update({
     id: '/demandes',
@@ -97,6 +115,12 @@ const AuthenticatedAdminPaiementsRoute =
   AuthenticatedAdminPaiementsRouteImport.update({
     id: '/paiements',
     path: '/paiements',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminSettingsRoute =
+  AuthenticatedAdminSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminStatsRoute = AuthenticatedAdminStatsRouteImport.update({
@@ -116,6 +140,24 @@ const AuthenticatedAdminDemandesIdRoute =
     path: '/$id',
     getParentRoute: () => AuthenticatedAdminDemandesRoute,
   } as any)
+const ApiPublicCronExpirePendingRoute =
+  ApiPublicCronExpirePendingRouteImport.update({
+    id: '/api/public/cron/expire-pending',
+    path: '/api/public/cron/expire-pending',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCronSyncFedapayRoute =
+  ApiPublicCronSyncFedapayRouteImport.update({
+    id: '/api/public/cron/sync-fedapay',
+    path: '/api/public/cron/sync-fedapay',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicWebhooksAggregatorRoute =
+  ApiPublicWebhooksAggregatorRouteImport.update({
+    id: '/api/public/webhooks/aggregator',
+    path: '/api/public/webhooks/aggregator',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -127,12 +169,18 @@ export interface FileRoutesByFullPath {
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/recharge': typeof AuthenticatedRechargeRoute
   '/retrait': typeof AuthenticatedRetraitRoute
+  '/verification': typeof AuthenticatedVerificationRoute
+  '/admin/clients': typeof AuthenticatedAdminClientsRoute
   '/admin/demandes': typeof AuthenticatedAdminDemandesRouteWithChildren
   '/admin/logs': typeof AuthenticatedAdminLogsRoute
   '/admin/paiements': typeof AuthenticatedAdminPaiementsRoute
+  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/stats': typeof AuthenticatedAdminStatsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/demandes/$id': typeof AuthenticatedAdminDemandesIdRoute
+  '/api/public/cron/expire-pending': typeof ApiPublicCronExpirePendingRoute
+  '/api/public/cron/sync-fedapay': typeof ApiPublicCronSyncFedapayRoute
+  '/api/public/webhooks/aggregator': typeof ApiPublicWebhooksAggregatorRoute
   '/admin/demandes/': typeof AuthenticatedAdminDemandesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -144,11 +192,17 @@ export interface FileRoutesByTo {
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/recharge': typeof AuthenticatedRechargeRoute
   '/retrait': typeof AuthenticatedRetraitRoute
+  '/verification': typeof AuthenticatedVerificationRoute
+  '/admin/clients': typeof AuthenticatedAdminClientsRoute
   '/admin/logs': typeof AuthenticatedAdminLogsRoute
   '/admin/paiements': typeof AuthenticatedAdminPaiementsRoute
+  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/stats': typeof AuthenticatedAdminStatsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/demandes/$id': typeof AuthenticatedAdminDemandesIdRoute
+  '/api/public/cron/expire-pending': typeof ApiPublicCronExpirePendingRoute
+  '/api/public/cron/sync-fedapay': typeof ApiPublicCronSyncFedapayRoute
+  '/api/public/webhooks/aggregator': typeof ApiPublicWebhooksAggregatorRoute
   '/admin/demandes': typeof AuthenticatedAdminDemandesIndexRoute
 }
 export interface FileRoutesById {
@@ -163,12 +217,18 @@ export interface FileRoutesById {
   '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
   '/_authenticated/recharge': typeof AuthenticatedRechargeRoute
   '/_authenticated/retrait': typeof AuthenticatedRetraitRoute
+  '/_authenticated/verification': typeof AuthenticatedVerificationRoute
+  '/_authenticated/admin/clients': typeof AuthenticatedAdminClientsRoute
   '/_authenticated/admin/demandes': typeof AuthenticatedAdminDemandesRouteWithChildren
   '/_authenticated/admin/logs': typeof AuthenticatedAdminLogsRoute
   '/_authenticated/admin/paiements': typeof AuthenticatedAdminPaiementsRoute
+  '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/admin/stats': typeof AuthenticatedAdminStatsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/demandes/$id': typeof AuthenticatedAdminDemandesIdRoute
+  '/api/public/cron/expire-pending': typeof ApiPublicCronExpirePendingRoute
+  '/api/public/cron/sync-fedapay': typeof ApiPublicCronSyncFedapayRoute
+  '/api/public/webhooks/aggregator': typeof ApiPublicWebhooksAggregatorRoute
   '/_authenticated/admin/demandes/': typeof AuthenticatedAdminDemandesIndexRoute
 }
 export interface FileRouteTypes {
@@ -183,12 +243,18 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/recharge'
     | '/retrait'
+    | '/verification'
+    | '/admin/clients'
     | '/admin/demandes'
     | '/admin/logs'
     | '/admin/paiements'
+    | '/admin/settings'
     | '/admin/stats'
     | '/admin/'
     | '/admin/demandes/$id'
+    | '/api/public/cron/expire-pending'
+    | '/api/public/cron/sync-fedapay'
+    | '/api/public/webhooks/aggregator'
     | '/admin/demandes/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -200,11 +266,17 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/recharge'
     | '/retrait'
+    | '/verification'
+    | '/admin/clients'
     | '/admin/logs'
     | '/admin/paiements'
+    | '/admin/settings'
     | '/admin/stats'
     | '/admin'
     | '/admin/demandes/$id'
+    | '/api/public/cron/expire-pending'
+    | '/api/public/cron/sync-fedapay'
+    | '/api/public/webhooks/aggregator'
     | '/admin/demandes'
   id:
     | '__root__'
@@ -218,12 +290,18 @@ export interface FileRouteTypes {
     | '/_authenticated/notifications'
     | '/_authenticated/recharge'
     | '/_authenticated/retrait'
+    | '/_authenticated/verification'
+    | '/_authenticated/admin/clients'
     | '/_authenticated/admin/demandes'
     | '/_authenticated/admin/logs'
     | '/_authenticated/admin/paiements'
+    | '/_authenticated/admin/settings'
     | '/_authenticated/admin/stats'
     | '/_authenticated/admin/'
     | '/_authenticated/admin/demandes/$id'
+    | '/api/public/cron/expire-pending'
+    | '/api/public/cron/sync-fedapay'
+    | '/api/public/webhooks/aggregator'
     | '/_authenticated/admin/demandes/'
   fileRoutesById: FileRoutesById
 }
@@ -231,6 +309,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ApiPublicCronExpirePendingRoute: typeof ApiPublicCronExpirePendingRoute
+  ApiPublicCronSyncFedapayRoute: typeof ApiPublicCronSyncFedapayRoute
+  ApiPublicWebhooksAggregatorRoute: typeof ApiPublicWebhooksAggregatorRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -305,11 +386,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRetraitRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/verification': {
+      id: '/_authenticated/verification'
+      path: '/verification'
+      fullPath: '/verification'
+      preLoaderRoute: typeof AuthenticatedVerificationRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
       path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/clients': {
+      id: '/_authenticated/admin/clients'
+      path: '/clients'
+      fullPath: '/admin/clients'
+      preLoaderRoute: typeof AuthenticatedAdminClientsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/demandes': {
@@ -333,6 +428,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminPaiementsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/settings': {
+      id: '/_authenticated/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AuthenticatedAdminSettingsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/stats': {
       id: '/_authenticated/admin/stats'
       path: '/stats'
@@ -354,6 +456,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminDemandesIdRouteImport
       parentRoute: typeof AuthenticatedAdminDemandesRoute
     }
+    '/api/public/cron/expire-pending': {
+      id: '/api/public/cron/expire-pending'
+      path: '/api/public/cron/expire-pending'
+      fullPath: '/api/public/cron/expire-pending'
+      preLoaderRoute: typeof ApiPublicCronExpirePendingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/sync-fedapay': {
+      id: '/api/public/cron/sync-fedapay'
+      path: '/api/public/cron/sync-fedapay'
+      fullPath: '/api/public/cron/sync-fedapay'
+      preLoaderRoute: typeof ApiPublicCronSyncFedapayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/webhooks/aggregator': {
+      id: '/api/public/webhooks/aggregator'
+      path: '/api/public/webhooks/aggregator'
+      fullPath: '/api/public/webhooks/aggregator'
+      preLoaderRoute: typeof ApiPublicWebhooksAggregatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -374,17 +497,21 @@ const AuthenticatedAdminDemandesRouteWithChildren =
   )
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminClientsRoute: typeof AuthenticatedAdminClientsRoute
   AuthenticatedAdminDemandesRoute: typeof AuthenticatedAdminDemandesRouteWithChildren
   AuthenticatedAdminLogsRoute: typeof AuthenticatedAdminLogsRoute
   AuthenticatedAdminPaiementsRoute: typeof AuthenticatedAdminPaiementsRoute
+  AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
   AuthenticatedAdminStatsRoute: typeof AuthenticatedAdminStatsRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminClientsRoute: AuthenticatedAdminClientsRoute,
   AuthenticatedAdminDemandesRoute: AuthenticatedAdminDemandesRouteWithChildren,
   AuthenticatedAdminLogsRoute: AuthenticatedAdminLogsRoute,
   AuthenticatedAdminPaiementsRoute: AuthenticatedAdminPaiementsRoute,
+  AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
   AuthenticatedAdminStatsRoute: AuthenticatedAdminStatsRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
@@ -400,6 +527,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
   AuthenticatedRechargeRoute: typeof AuthenticatedRechargeRoute
   AuthenticatedRetraitRoute: typeof AuthenticatedRetraitRoute
+  AuthenticatedVerificationRoute: typeof AuthenticatedVerificationRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -410,6 +538,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
   AuthenticatedRechargeRoute: AuthenticatedRechargeRoute,
   AuthenticatedRetraitRoute: AuthenticatedRetraitRoute,
+  AuthenticatedVerificationRoute: AuthenticatedVerificationRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -419,6 +548,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  ApiPublicCronExpirePendingRoute: ApiPublicCronExpirePendingRoute,
+  ApiPublicCronSyncFedapayRoute: ApiPublicCronSyncFedapayRoute,
+  ApiPublicWebhooksAggregatorRoute: ApiPublicWebhooksAggregatorRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
